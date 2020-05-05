@@ -80,18 +80,32 @@ const updateTerm = (id, term) => {
     return iou;
 };
 
-const archiveTerm = () => {
-
-};
-
-const deleteTerm = () => {
-
+const deleteTerm = (id) => {
+    const iou = new Promise((resolve, reject) => {
+        MongoClient.connect(url, settings, async function(err, client) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log("Connected to server to DELETE term.")
+                db = client.db(dbName);
+                collection = db.collection(colName);
+                collection.delete({ _id : ObjectID(id) }, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve({ deletedID : id });
+                        client.close();
+                    };
+                });
+            };
+        });
+    });
+    return iou;
 };
 
 module.exports = {
     getTerms,
     addTerm,
     updateTerm,
-    archiveTerm,
     deleteTerm
 };
