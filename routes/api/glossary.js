@@ -2,10 +2,38 @@ const express = require('express');
 const Router = express.Router();
 const {
     getTerms,
+    getTermByID,
+    getTermByValue,
     addTerm,
     updateTerm,
     deleteTerm
 } = require('../../data/glossary');
+
+Router.get('/:id', async function(req, res, next) {
+    if (!req.params.id) {
+        next('route');
+    };
+    try {
+        const data = await getTermByID(req.params.id);
+        res.send(data);
+    } catch(err) {
+        console.log(err);
+        res.status(500).send("Internal Server Issue, check logs");
+    };
+});
+
+Router.get('/:key/:value', async function(req, res, next) {
+    if (!req.params.key && !req.params.value) {
+        next('route');
+    };
+    try {
+        const data = await getTermByValue();
+        res.send(data);
+    } catch(err) {
+        console.log(err);
+        res.status(500).send("Internal Server Issues, check logs");
+    }
+})
 
 Router.get('/', async function(req, res, next) {
     try {
