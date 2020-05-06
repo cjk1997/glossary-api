@@ -27,7 +27,9 @@ Router.get('/:key/:value', async function(req, res, next) {
         next('route');
     };
     try {
-        const data = await getTermByValue();
+        const value = req.params.value.replace(/_/g, ' ');
+        
+        const data = await getTermByValue(req.params.key, value);
         res.send(data);
     } catch(err) {
         console.log(err);
