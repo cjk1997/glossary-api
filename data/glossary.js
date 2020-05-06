@@ -31,6 +31,52 @@ const getTerms = () => {
     return iou;
 };
 
+const getTermByID = (id) => {
+    const iou = new Promise((resolve, reject) => {
+        MongoClient.connect(url, settings, async function(err, client) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log("Connected to server to GET term by ID.")
+                db = client.db(dbName);
+                collection = db.collection(colName);
+                collection.find({ _id : ObjectID(id) }).toArray(function(err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                        client.close();
+                    };
+                });
+            };
+        });
+    });
+    return iou;
+};
+
+const getTermByValue = (key, value) => {
+    const iou = new Promise((resolve, reject) => {
+        MongoClient.connect(url, settings, async function(err, client) {
+            if (err) {
+                reject(err);
+            } else {
+                console.log("Connected to server to GET term by value.")
+                db = client.db(dbName);
+                collection = db.collection(colName);
+                collection.find({ [key] : value }).toArray(function(err, result) {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(result);
+                        client.close();
+                    };
+                });
+            };
+        });
+    });
+    return iou;
+};
+
 const addTerm = () => {
     const iou = new Promise((resolve, reject) => {
         MongoClient.connect(url, settings, async function(err, client) {
@@ -105,6 +151,8 @@ const deleteTerm = (id) => {
 
 module.exports = {
     getTerms,
+    getTermByID,
+    getTermByValue,
     addTerm,
     updateTerm,
     deleteTerm
